@@ -1,5 +1,5 @@
-CC := gcc
-CXX := g++
+CC := emcc
+CXX := em++
 
 SRCDIR = src
 OBJDIR = obj
@@ -11,7 +11,7 @@ PREFIX ?= $(HOME)/.local
 DEPENDENCIES_CFLAGS := $(shell pkg-config --cflags sndfile)
 DEPENDENCIES_LDFLAGS := $(shell pkg-config --libs sndfile)
 
-CFLAGS += -std=c11 -O2 -Wall -Wextra
+CFLAGS += -std=c11 -O2 -Wall -Wextra -D_POSIX_SOURCE # for fmemopen
 CXXFLAGS += -std=c++11 -O2 -Wall -Wextra
 CPPFLAGS += -Iinclude $(SNDFILE_CFLAGS)
 LDFLAGS += -Llib -lm $(DEPENDENCIES_LDFLAGS)
@@ -36,7 +36,7 @@ $(CXXOBJS): $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 
 lib/libhca.a: $(filter $(OBJDIR)/hca_%.o,$(OBJS))
 	@mkdir -p lib
-	ar rs $@ $^
+	emar rs $@ $^
 
 .PHONY: clean install
 install:
